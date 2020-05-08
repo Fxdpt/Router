@@ -4,6 +4,7 @@ namespace App;
 
 use Symfony\Component\Yaml\Yaml;
 use App\Exception\InvalidRouteException;
+use App\Exception\InvalidActionException;
 
 class Router
 {
@@ -46,9 +47,9 @@ class Router
     private function isInConfig(string $url) : bool
     {
         $routes = $this->routesConfig['routes'];
-        foreach($routes as $routeName => $routeParams){
+        foreach($routes as $routeParams){
             if ($routeParams['path'] === $url) {
-                $this->currentRoute[$routeName] = $routeParams;
+                $this->currentRoute = $routeParams;
                 return true;
             }
         }
@@ -61,9 +62,25 @@ class Router
      * @param array $routeConfig
      * @return void
      */
-    private function dispatch(array $routeConfig)
+    public function dispatch(array $routeConfig)
     {
-        dump($routeConfig);
+        $action = explode('::',$routeConfig['action']);
+        try {
+            if(count($action) !== 2 || $action === false) {
+                throw new InvalidActionException('Your action must be on format ControllerName::methodName');
+            }
+            else {
+                $controllerName = 'App\\'.$action[0];
+                $method = $action[1];
+
+                $controller = new $controllerName();
+                $controller->$method();
+
+            }
+        } catch (InvalidActionException $e) {
+            echo $e->getMessage();
+            exit;
+        }
     }
 
     /**
