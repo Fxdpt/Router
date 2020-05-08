@@ -1,0 +1,15 @@
+routes:
+    toto:
+        path: '/toto'
+        parameters:
+            name: 'id'
+            type: 'int'
+        methods: 'GET'
+        action: 'TotoController::show'
+    example:
+        path: '/example'
+        parameters:
+            name: 'id'
+            type: 'int'
+        methods: 'GET'
+        action: 'ExampleController::show'
