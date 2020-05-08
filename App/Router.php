@@ -70,7 +70,7 @@ class Router
                 throw new InvalidActionException('Your action must be on format ControllerName::methodName');
             }
             else {
-                $controllerName = 'App\\'.$action[0];
+                $controllerName = 'App\\' . $action[0];
                 $method = $action[1];
 
                 $controller = new $controllerName();
