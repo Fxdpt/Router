@@ -15,18 +15,18 @@ class Router
      *
      * @var array
      */
-    private $routesConfig = [];
+    private $routesConfiguration = [];
 
     /**
-     * The current route parameters is the parsing is true
+     * The current route configuration if the parsing is true
      *
      * @var array
      */
-    private $currentRoute = [];
+    private $currentRouteConfiguration = [];
 
     public function __construct()
     {
-        $this->routesConfig =  Yaml::parseFile(__DIR__ . '/config/routes.yaml');
+        $this->routesConfiguration =  Yaml::parseFile(__DIR__ . '/config/routes.yaml');
         $dotenv = new Dotenv();
         $dotenv->loadEnv(__DIR__ . '/../.env');
     }
@@ -47,19 +47,19 @@ class Router
      * @param string $url
      * @return boolean
      */
-    private function isInConfig(string $url) : bool
+    private function isInConfig(string $url): bool
     {
-        $routes = $this->routesConfig['routes'];
+        $routes = $this->routesConfiguration['routes'];
         foreach ($routes as $routeParams) {
             if ($routeParams['path'] === $url) {
-                $this->currentRoute = $routeParams;
+                $this->currentRouteConfiguration = $routeParams;
                 return true;
             }
         }
         return false;
     }
 
-    private function paramResolver(array $currentRoute, string $url)
+    private function paramResolver(array $currentRouteConfiguration, string $url)
     {
         //Check if the parameters match with the corresponding type in .yaml
 
@@ -73,12 +73,11 @@ class Router
      */
     public function dispatch(array $routeConfig)
     {
-        $action = explode('::',$routeConfig['action']);
+        $action = explode('::', $routeConfig['action']);
         try {
             if (count($action) !== 2 || $action === false) {
                 throw new InvalidActionException('Your action must be on format ControllerName::methodName');
-            }
-            else {
+            } else {
                 $controllerName = $_ENV['CONTROLLER_NAMESPACE'] . '\\' . $action[0];
                 $method = $action[1];
 
@@ -100,15 +99,15 @@ class Router
     {
         $url = $this->parseUrl();
 
-        try{
+        try {
             if ($this->isInConfig($url)) {
-                $this->dispatch($this->currentRoute);
+                $this->dispatch($this->currentRouteConfiguration);
             } else {
-                throw new InvalidRouteException('This route doesn\t exist, please check your configuration in routes.yaml');
+                throw new InvalidRouteException('This route doesn\'t exist, please check your configuration in routes.yaml');
             }
-        }catch(InvalidRouteException $e) {
-           echo $e->getMessage();
-           exit;
+        } catch (InvalidRouteException $e) {
+            echo $e->getMessage();
+            exit;
         }
     }
 }
