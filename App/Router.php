@@ -104,7 +104,7 @@ class Router
             if ($this->isInConfig($url)) {
                 $this->dispatch($this->currentRoute);
             } else {
-                throw new InvalidRouteException('This route doesn\t exist, please check your configuration in routes.yaml');
+                throw new InvalidRouteException('This route doesn\'t exist, please check your configuration in routes.yaml');
             }
         }catch(InvalidRouteException $e) {
            echo $e->getMessage();
