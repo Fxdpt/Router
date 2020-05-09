@@ -50,7 +50,7 @@ class Router
     private function isInConfig(string $url) : bool
     {
         $routes = $this->routesConfig['routes'];
-        foreach($routes as $routeParams){
+        foreach ($routes as $routeParams) {
             if ($routeParams['path'] === $url) {
                 $this->currentRoute = $routeParams;
                 return true;
