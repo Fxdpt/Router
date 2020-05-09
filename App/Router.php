@@ -59,6 +59,12 @@ class Router
         return false;
     }
 
+    private function paramResolver(array $currentRoute, string $url)
+    {
+        //Check if the parameters match with the corresponding type in .yaml
+
+    }
+
     /**
      * Dispatch the request to the correct controller & method
      *
