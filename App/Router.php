@@ -5,6 +5,7 @@ namespace App;
 use Symfony\Component\Yaml\Yaml;
 use App\Exception\InvalidRouteException;
 use App\Exception\InvalidActionException;
+use Symfony\Component\Dotenv\Dotenv;
 
 class Router
 {
@@ -26,6 +27,8 @@ class Router
     public function __construct()
     {
         $this->routesConfig =  Yaml::parseFile(__DIR__ . '/config/routes.yaml');
+        $dotenv = new Dotenv();
+        $dotenv->loadEnv(__DIR__ . '/../.env');
     }
 
     /**
@@ -66,16 +69,15 @@ class Router
     {
         $action = explode('::',$routeConfig['action']);
         try {
-            if(count($action) !== 2 || $action === false) {
+            if (count($action) !== 2 || $action === false) {
                 throw new InvalidActionException('Your action must be on format ControllerName::methodName');
             }
             else {
-                $controllerName = 'App\\' . $action[0];
+                $controllerName = $_ENV['CONTROLLER_NAMESPACE'] . '\\' . $action[0];
                 $method = $action[1];
 
                 $controller = new $controllerName();
                 $controller->$method();
-
             }
         } catch (InvalidActionException $e) {
             echo $e->getMessage();
